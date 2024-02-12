@@ -1,4 +1,5 @@
 import axios from 'axios';
+import qs from 'qs';
 
 import RateLimitManager from '../RateLimitManager';
 import { RestClientConfig } from '../types';
@@ -23,6 +24,9 @@ class RestClient {
       headers: {
         // eslint-disable-next-line @typescript-eslint/naming-convention
         'X-Auth-Token': config.accessToken,
+      },
+      paramsSerializer: (params: object) => {
+        return qs.stringify(params, { arrayFormat: 'brackets' });
       },
     });
 
