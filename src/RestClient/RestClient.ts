@@ -30,6 +30,26 @@ class RestClient {
       },
     });
 
+    client.interceptors.response.use(
+      response => response,
+      (
+        error:
+          | object
+          | {
+              response?: {
+                data: unknown;
+              };
+            },
+      ) => {
+        // Return a BigCommerce error response for a better understanding of the issue
+        if ('response' in error && error.response?.data) {
+          return Promise.reject(error.response.data);
+        }
+
+        return Promise.reject(error);
+      },
+    );
+
     this.rateLimitManager = new RateLimitManager(
       client,
       config.rateLimitConfig ?? { enableWait: false, minRequestsRemaining: 1 },

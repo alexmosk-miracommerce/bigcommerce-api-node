@@ -25,6 +25,14 @@ var RestClient = /** @class */ (function () {
                 return qs_1.default.stringify(params, { arrayFormat: 'brackets' });
             },
         });
+        client.interceptors.response.use(function (response) { return response; }, function (error) {
+            var _a;
+            // Return a BigCommerce error response for a better understanding of the issue
+            if ('response' in error && ((_a = error.response) === null || _a === void 0 ? void 0 : _a.data)) {
+                return Promise.reject(error.response.data);
+            }
+            return Promise.reject(error);
+        });
         this.rateLimitManager = new RateLimitManager_1.default(client, (_b = config.rateLimitConfig) !== null && _b !== void 0 ? _b : { enableWait: false, minRequestsRemaining: 1 });
         this.v2 = new V2_1.default(client);
         this.v3 = new V3_1.default(client);
